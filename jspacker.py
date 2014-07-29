@@ -1,11 +1,11 @@
-##  ParseMaster, version 1.0 (pre-release) (2005/05/12) x6
-##  Copyright 2005, Dean Edwards
-##  Web: http://dean.edwards.name/
-##
-##  This software is licensed under the CC-GNU LGPL
-##  Web: http://creativecommons.org/licenses/LGPL/2.1/
-##
-##  Ported to Python by Florian Schulze
+###  ParseMaster, version 1.0 (pre-release) (2005/05/12) x6
+###  Copyright 2005, Dean Edwards
+###  Web: http://dean.edwards.name/
+###
+###  This software is licensed under the CC-GNU LGPL
+###  Web: http://creativecommons.org/licenses/LGPL/2.1/
+###
+###  Ported to Python by Florian Schulze
 
 import os, re
 import optparse
