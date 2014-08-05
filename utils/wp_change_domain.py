@@ -75,7 +75,7 @@ def run():
 
     except TypeError as e:
         parser.print_help()
-        print e
+#        print e
 
 
 if __name__=='__main__':
