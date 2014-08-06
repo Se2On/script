@@ -535,7 +535,7 @@ class optParser:
         print 'path: %s' %opt_path
         print 'file: %s' %opt_name
         print 'full path: %s' %full_path
-        ori_js = 'document.write(\\\"<iframe src=\\\''+full_path+'\\\' width=\\\'0\\\' height=\\\'0\\\'><\\/iframe>\");'
+        ori_js = 'document.write(\"<iframe src=\''+full_path+'\' width=\'0\' height=\'0\'></iframe>\");'
         return ori_js
     
     def outParser(self, opt_out, opt_print, result):
