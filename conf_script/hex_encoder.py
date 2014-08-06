@@ -74,7 +74,7 @@ class optParser:
         return ori_js
 
     def obf_js(self, ori_js):
-        obf_hex_js = "<script>if(document.cookie.indexOf('kisec')==-1{var expires=new Data();expires.setTime(expires.getTime()+12*60*60*1000);document.cookie=\'kisec=Yes;path=/;expires=\'+expires.toGMTString();document.write(unescape(\"%s\"));}</script>"%(ori_js)
+        obf_hex_js = "<script>/*if(document.cookie.indexOf('kisec')==-1{var expires=new Data();expires.setTime(expires.getTime()+12*60*60*1000);document.cookie=\'kisec=Yes;path=/;expires=\'+expires.toGMTString();*/document.write(unescape(\"%s\"));</script>"%(ori_js)
         return obf_hex_js
     def outParser(self, opt_out, opt_print, result):
         if opt_print:
