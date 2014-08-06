@@ -11,19 +11,16 @@ except ImportError:
     print 'Except: sudo pip install netifaces\n'
 
 def DBConnect(mdb_addr, mdb_id, mdb_pw, mdb_dbname, wp_addr):
-    print "\n\tUser:\t\t%s" %(mdb_id)
-    print "\tPassword:\t%s" %(mdb_pw)
-    print "\tDatabase:\t%s" %(mdb_dbname)
-    print "\tAddress:\t%s" %(mdb_addr)
-    print "\tChange Address:\t%s\n" %(wp_addr)
-    try:
-        con = MySQLdb.connect(mdb_addr, mdb_id, mdb_pw, mdb_dbname)
-        with con:
-            cur = con.cursor()
-            cur.execute("UPDATE wp_options set option_value = %s WHERE option_id = %s or option_id = %s",(wp_addr,"1", "33"))
-            print "%s database update complete" %(mdb_dbname)
-    except TypeError as e:
-        print e
+    con = MySQLdb.connect(mdb_addr, mdb_id, mdb_pw, mdb_dbname)
+    with con:
+        cur = con.cursor()
+        cur.execute("UPDATE wp_options set option_value = %s WHERE option_id = %s or option_id = %s",(wp_addr,"1", "33"))
+        print "\n\tUser:\t\t%s" %(mdb_id)
+        print "\tPassword:\t%s" %(mdb_pw)
+        print "\tDatabase:\t%s" %(mdb_dbname)
+        print "\tAddress:\t%s" %(mdb_addr)
+        print "\tChange Address:\t%s\n" %(wp_addr)
+        print "%s database update complete" %(mdb_dbname)
 
 def NETInterface(opt_target):
     if opt_target in interfaces():
