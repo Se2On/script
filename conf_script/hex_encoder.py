@@ -76,6 +76,7 @@ class optParser:
     def obf_js(self, ori_js):
         obf_hex_js = "<script>/*if(document.cookie.indexOf('kisec')==-1{var expires=new Data();expires.setTime(expires.getTime()+12*60*60*1000);document.cookie=\'kisec=Yes;path=/;expires=\'+expires.toGMTString();*/document.write(unescape(\"%s\"));</script>"%(ori_js)
         return obf_hex_js
+
     def outParser(self, opt_out, opt_print, result):
         if opt_print:
             if opt_out:
@@ -87,14 +88,14 @@ class optParser:
                 print 'open \'%s\' file' %(opt_out)
             else:
                 open('out.js','w').write(result)
-                print 'open \'out.js\' file'
+                print 'open \'out.html\' file'
 
 def run():
     print '\nVersion: 0.1'
     parser =  optparse.OptionParser('\n\thex_encoder.py -i [input file name] -o [output file name]\n' + \
                                     '\thex_encoder.py -e [input network interface or domain] -t ' + \
                                         '[input URI] -n [file name] -o [output file name]\n' + \
-                                    '\t(if -o option is null, default use out.js)\n' + \
+                                    '\t(if -o option is null, default use out.html)\n' + \
                                     '\t(if you use -p options, default disuse -o option)\n')
 
     parser.add_option('-i', '--input', dest='IN', type='string', help='input iframe tag code in HTML')
