@@ -103,8 +103,8 @@ def run():
         opt.outParser(opt_out, opt_print, result)
 
     except TypeError as e:
-#        parser.print_help()
-        print e
+        parser.print_help()
+#        print e
 
 
 if __name__=='__main__':
