@@ -14,7 +14,7 @@ def DBConnect(mdb_addr, mdb_id, mdb_pw, mdb_dbname, wp_addr):
     con = MySQLdb.connect(mdb_addr, mdb_id, mdb_pw, mdb_dbname)
     with con:
         cur = con.cursor()
-        cur.execute("UPDATE wp_options set option_value = %s WHERE option_id = %s or option_id = %s",(wp_addr,"1", "33"))
+        cur.execute("UPDATE wp_options set option_value = %s WHERE option_name = %s or option_name = %s",(wp_addr,"siteurl", "home"))
         print "\n\tUser:\t\t%s" %(mdb_id)
         print "\tPassword:\t%s" %(mdb_pw)
         print "\tDatabase:\t%s" %(mdb_dbname)
